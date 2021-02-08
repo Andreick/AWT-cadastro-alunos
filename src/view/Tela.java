@@ -205,13 +205,28 @@ public class Tela extends Frame implements ActionListener {
     public static void main(String[] args) {
         new Tela().setVisible(true);
     }
+    
+    private void moverInteresse(String interesse, Object botao) {
+        
+        if (interesse != null) {
+           
+            if (botao == btDir) {
+                liInterDir.add(interesse);
+                liInterEsq.remove(interesse);
+            }
+            else if (botao == btEsq) {
+                liInterEsq.add(interesse);
+                liInterDir.remove(interesse);
+            }
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Object componente;
+        String nome, estado;
         Checkbox slctdCurso;
-        String slctdInterEsq, slctdInterDir;
-        int interDirCount, i;
+        int curso, i, interDirCount;
         
         componente = e.getSource();
         
@@ -225,11 +240,16 @@ public class Tela extends Frame implements ActionListener {
             }
             
             interDirCount = liInterDir.getItemCount();
+            
+            nome = tfNome.getText();
+            estado = chEstado.getSelectedItem();
+            
             alunos[cadIndex] = new Aluno(interDirCount);
-            alunos[cadIndex].setNome(tfNome.getText());
+            alunos[cadIndex].setNome(nome);
             tfNome.setText("");
-            alunos[cadIndex].setEstado(chEstado.getSelectedItem());
+            alunos[cadIndex].setEstado(estado);
             chEstado.select(0);
+            
             slctdCurso = cbgCursos.getSelectedCheckbox();
             
             if (slctdCurso == cbCurso1) {
@@ -247,13 +267,11 @@ public class Tela extends Frame implements ActionListener {
             
             for (i = 0; i < interDirCount; i++) {
                 
-                slctdInterDir = liInterDir.getItem(0);
-                alunos[cadIndex].setInteresse(slctdInterDir, i);
-                liInterEsq.add(slctdInterDir);
-                liInterDir.remove(slctdInterDir);
+                alunos[cadIndex].setInteresse(liInterDir.getItem(0), i);
+                moverInteresse(liInterDir.getItem(0), btEsq);
             }
             
-            liCadastro.add(alunos[cadIndex].getNome(), cadIndex);
+            liCadastro.add(nome, cadIndex);
         }
         else if(componente == btConsultar) {
             
@@ -265,21 +283,11 @@ public class Tela extends Frame implements ActionListener {
         }
         else if(componente == btDir) {
             
-            slctdInterEsq = liInterEsq.getSelectedItem();
-            
-            if (slctdInterEsq != null) {
-                
-                liInterDir.add(slctdInterEsq);
-                liInterEsq.remove(slctdInterEsq);
-            }
+            moverInteresse(liInterEsq.getSelectedItem(), btDir);
         }
         else if(componente == btEsq) {
-            slctdInterDir = liInterDir.getSelectedItem();
             
-            if (slctdInterDir != null) {
-                liInterEsq.add(slctdInterDir);
-                liInterDir.remove(slctdInterDir);
-            }
+            moverInteresse(liInterDir.getSelectedItem(), btEsq);
         }
         else if(componente == btAlterar) {
             
@@ -288,11 +296,14 @@ public class Tela extends Frame implements ActionListener {
             
                 if (cadIndex != -1) {
 
-                    tfNome.setText(alunos[cadIndex].getNome());
-                    chEstado.select(alunos[cadIndex].getEstado());
-                    i = alunos[cadIndex].getCurso();
+                    nome = alunos[cadIndex].getNome();
+                    estado = alunos[cadIndex].getEstado();
+                    tfNome.setText(nome);
+                    chEstado.select(estado);
+                    
+                    curso = alunos[cadIndex].getCurso();
 
-                    switch (i) {
+                    switch (curso) {
                         case 1: cbgCursos.setSelectedCheckbox(cbCurso1); break;
                         case 2: cbgCursos.setSelectedCheckbox(cbCurso2); break;
                         case 3: cbgCursos.setSelectedCheckbox(cbCurso3); break;
@@ -302,11 +313,10 @@ public class Tela extends Frame implements ActionListener {
 
                     for (i = 0; i < interDirCount; i++) {
 
-                        liInterDir.add(alunos[cadIndex].getInteresse(i));
-                        liInterEsq.remove(alunos[cadIndex].getInteresse(i));
+                        moverInteresse(alunos[cadIndex].getInteresse(i), btDir);
                     }
 
-                    liCadastro.remove(alunos[cadIndex].getNome());
+                    liCadastro.remove(nome);
                     alterar = true;
                 }
             }

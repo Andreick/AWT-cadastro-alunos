@@ -52,9 +52,9 @@ public class Aluno {
 
     @Override
     public String toString() {
-        return "Aluno: " + this.nome +
-             "\nEstado: " + this.estado +
-             "\nCurso: " + this.curso +
+        return "Aluno......: " + this.nome +
+             "\nEstado....: " + this.estado +
+             "\nCurso......: " + this.curso +
              "\nInteresses:" + getInteresses();
     }
     
